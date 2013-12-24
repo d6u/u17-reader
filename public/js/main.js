@@ -55,9 +55,15 @@ app.config(function($routeProvider, $locationProvider) {
 
 app.run(function($rootScope, $http, $location, DataObject) {
 
-  $rootScope.inputSubmit = function($event, targetUrl) {
-    if ($event.keyCode === 13 && $rootScope.headerForm.$valid) {
-      $http.post('/api/scrap_url', {target_url: $rootScope.targetUrl})
+  $rootScope.inputSubmit = function($event, targetUrl, bookPage) {
+    if ($event == null ||
+       ($event.keyCode === 13 && $rootScope.headerForm.$valid))
+    {
+      NProgress.start();
+      var promise = $http.post(
+        '/api/scrap_url',
+        {target_url: targetUrl,
+         book_page:  bookPage})
       .then(function(res) {
         if (res.data.type === 'chapter_page') {
           DataObject.urls = res.data.urls;
@@ -66,9 +72,14 @@ app.run(function($rootScope, $http, $location, DataObject) {
           DataObject.chapters = res.data.chapters;
           $location.path('/book_page/');
         }
+        NProgress.done();
       }, function(err) {
         console.error('Error occurs during scraping %O', err.data);
+        NProgress.remove();
+        throw err;
       });
+
+      return promise;
     }
   };
 
@@ -83,15 +94,9 @@ app.controller('DashboardCtrl', function($scope) {
 app.controller('BookCtrl', function($scope, DataObject, $location, $http, $rootScope) {
 
   this.jumpToChapter = function(chapter, $index) {
-    $http.post('/api/scrap_url', {target_url: chapter.href})
-    .then(function(res) {
-      if (res.data.type === 'chapter_page') {
-        DataObject.urls = res.data.urls;
-        $rootScope.lastVisitedChapterIndex = $index;
-        $location.path($location.path() + chapter.title);
-      }
-    }, function(err) {
-      console.error('Error occurs during scraping %O', err.data);
+    $rootScope.inputSubmit(null, chapter.href, true)
+    .then(function() {
+      $rootScope.lastVisitedChapterIndex = $index;
     });
   };
 

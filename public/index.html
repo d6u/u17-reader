@@ -13,6 +13,7 @@
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
   <link rel="stylesheet" href="/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/vendor/nprogress.css">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.6.2.min.js"></script>
 </head>
@@ -20,7 +21,7 @@
 
   <header class="md-banner">
     <form name="headerForm" class="md-banner-form">
-      <input name="targetUrl" type="text" required class="md-banner-form-input" ng-keypress="inputSubmit($event, targetUrl)" ng-model="targetUrl" ng-trim="true" ng-pattern="/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/">
+      <input name="targetUrl" type="text" class="md-banner-form-input" ng-keypress="inputSubmit($event, targetUrl)" ng-model="targetUrl" ng-trim="true" ng-pattern="/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/" placeholder="Enter comic page url">
     </form>
   </header>
 
@@ -57,6 +58,7 @@
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
   <script src="/js/vendor/angular-animate.min.js"></script>
   <script src="/js/vendor/angular-route.min.js"></script>
+  <script src="/js/vendor/nprogress.js"></script>
   <script src="/js/main.js"></script>
 </body>
 </html>
