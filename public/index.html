@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>U17 Reader</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+  <link rel="stylesheet" href="/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="/js/vendor/modernizr-2.6.2.min.js"></script>
+</head>
+<body ng-app="comicApp">
+
+  <header class="md-banner">
+    <form name="headerForm" class="md-banner-form">
+      <input name="targetUrl" type="text" required class="md-banner-form-input" ng-keypress="inputSubmit($event, targetUrl)" ng-model="targetUrl" ng-trim="true" ng-pattern="/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/">
+    </form>
+  </header>
+
+  <ng-view class="md-body">
+
+  </ng-view>
+
+
+  <script type="text/ng-template" id="dashboard.html">
+    <ol class="md-bookshelf">
+      <li class="md-bookshelf-item"></li>
+    </ol>
+  </script>
+
+  <script type="text/ng-template" id="book.html">
+    <ol class="md-chapter-list clearfix">
+      <li class="md-chapter-item" ng-repeat="chapter in BookCtrl.chapters">
+        <a class="md-chapter-item-anchor" href ng-click="BookCtrl.jumpToChapter(chapter, $index)" ng-class="{'last-visited': $index === lastVisitedChapterIndex}">
+          <h2 class="md-chapter-item-title">{{ chapter.title }}</h2>
+        </a>
+      </li>
+    </ol>
+  </script>
+
+  <script type="text/ng-template" id="chapter.html">
+    <ol class="md-chapter">
+      <li class="md-chapter-page" ng-repeat="image in ChapterCtrl.images">
+        <img ng-src="{{ image.src }}" class="md-chapter-page-image">
+      </li>
+    </ol>
+  </script>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+  <script src="/js/vendor/angular-animate.min.js"></script>
+  <script src="/js/vendor/angular-route.min.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
