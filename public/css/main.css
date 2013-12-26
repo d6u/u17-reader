@@ -15,7 +15,7 @@ body {
 
 .md-banner {
   height: 60px;
-  background-color: #4DC964;
+  background-color: #27ae60;
   display: flex;
 }
 
@@ -33,8 +33,23 @@ body {
   border: none;
   padding: 0 18px;
   font-size: 24px;
-  background-color: transparent;
+  background-color: #27ae60;
   color: #FFF;
+  transition: all 200ms;
+}
+
+.md-banner-form-input:required {
+  box-shadow: none;
+}
+
+.md-banner-form-input:hover,
+.md-banner-form-input:focus {
+  background-color: #2ecc71;
+}
+
+.md-banner-form-input.ng-invalid-pattern:hover,
+.md-banner-form-input.ng-invalid-pattern:focus {
+  background-color: #e74c3c;
 }
 
 .md-banner-form-input::-webkit-input-placeholder {

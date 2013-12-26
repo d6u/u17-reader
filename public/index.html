@@ -21,7 +21,7 @@
 
   <header class="md-banner">
     <form name="headerForm" class="md-banner-form">
-      <input name="targetUrl" type="text" class="md-banner-form-input" ng-keypress="inputSubmit($event, targetUrl)" ng-model="targetUrl" ng-trim="true" ng-pattern="/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/" placeholder="Enter comic page url">
+      <input name="targetUrl" type="text" required ng-keypress="inputSubmit($event, targetUrl)" ng-model="targetUrl" ng-pattern="/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/" placeholder="Enter comic page url" class="md-banner-form-input">
     </form>
   </header>
 
