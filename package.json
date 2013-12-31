@@ -10,6 +10,7 @@
     "jade": "*",
     "request": "*",
     "q": "*",
-    "lodash": "*"
+    "lodash": "*",
+    "chance": "*"
   }
 }

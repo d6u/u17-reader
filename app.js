@@ -12,8 +12,11 @@ var path = require('path');
 var request = require('request');
 var Q = require('q');
 var _ = require('lodash');
+var chance = new (require('chance'));
+var Url = require('url');
 
 var app = express();
+var pool = new http.Agent();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -142,6 +145,80 @@ function(err, req, res, next) {
   console.log(err.message);
   res.send(404, err);
 });
+
+
+app.post('/api/get_unseal_stone', function(req, res, next) {
+
+  var reference_url = req.param('reference_url');
+
+  var gotThreeStone = [];
+
+  console.log('Getting unseal stone for "%s"', reference_url);
+
+  _.times(3, function(i) {
+    // http://www.u17.com/www/ajax.php?mod=bee&act=bee_invite_user&location=http://www.u17.com/comic/6066.html?u=1511242&_=1388381640121
+    var url = Url.format({
+      protocol: 'http',
+      hostname: 'www.u17.com',
+      pathname: '/www/ajax.php',
+      query: {
+        mod: 'bee',
+        act: 'bee_invite_user',
+        location: reference_url,
+        _: _.now()
+      }
+    });
+
+    var requestOptions = {
+      url: url,
+      method: 'GET',
+      headers: {
+        'X-Forwarded-For': chance.ip(),
+        'Client-Ip': chance.ip(),
+        'Via': chance.ip()
+      },
+      pool: pool,
+      timeout: 10000
+    };
+
+    console.log('Sending #%d request...', i+1);
+
+    var got = Q.defer()
+      , counter = 1;
+    gotThreeStone.push(got);
+    (function sendRequest() {
+      request(requestOptions, function(err, response, body) {
+        if (response.statusCode === 200) {
+          got.resolve();
+        } else if (counter <= 3) {
+          console.log('#%d request failed, #%d attempt', i+1, counter);
+          counter++;
+          sendRequest();
+        } else {
+          console.log('#%d request failed after 3 attempts', i+1);
+          got.reject();
+        }
+      });
+    })();
+  });
+
+  Q.allSettled(gotThreeStone).then(function(results) {
+    var failedCount = 0;
+    for (var i = 0; i < results.length; i++) {
+      if (results[i].state != 'fulfilled') {
+        failedCount++
+      }
+    }
+    if (failedCount === 0) {
+      console.log('All request succeeded!');
+    } else {
+      console.log('Request finished with %d failed', failedCount);
+    }
+    res.send(200);
+  });
+
+});
+
 
 // Make sure every page leads to homepage
 app.get(/^(?!\/api).*/, function(req, res) {

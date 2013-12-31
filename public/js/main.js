@@ -59,27 +59,32 @@ app.run(function($rootScope, $http, $location, DataObject) {
     if ($event == null ||
        ($event.keyCode === 13 && $rootScope.headerForm.$valid))
     {
-      NProgress.start();
-      var promise = $http.post(
-        '/api/scrap_url',
-        {target_url: targetUrl,
-         book_page:  bookPage})
-      .then(function(res) {
-        if (res.data.type === 'chapter_page') {
-          DataObject.urls = res.data.urls;
-          $location.path('/book_page/chapter_page/');
-        } else {
-          DataObject.chapters = res.data.chapters;
-          $location.path('/book_page/');
-        }
-        NProgress.done();
-      }, function(err) {
-        console.error('Error occurs during scraping %O', err.data);
-        NProgress.remove();
-        throw err;
-      });
-
-      return promise;
+      if (/^http:\/\/www\.u17\.com\/comic\/\d+\.html\?u=\d+$/.test(targetUrl)) {
+        // http://www.u17.com/comic/6066.html?u=1511242
+        $http.post('/api/get_unseal_stone', {reference_url: targetUrl})
+        .then(function(res) { alert('success!'); });
+      } else {
+        NProgress.start();
+        var promise = $http.post(
+          '/api/scrap_url',
+          {target_url: targetUrl,
+           book_page:  bookPage})
+        .then(function(res) {
+          if (res.data.type === 'chapter_page') {
+            DataObject.urls = res.data.urls;
+            $location.path('/book_page/chapter_page/');
+          } else {
+            DataObject.chapters = res.data.chapters;
+            $location.path('/book_page/');
+          }
+          NProgress.done();
+        }, function(err) {
+          console.error('Error occurs during scraping %O', err.data);
+          NProgress.remove();
+          throw err;
+        });
+        return promise;
+      }
     }
   };
 
