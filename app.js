@@ -52,7 +52,16 @@ function(req, res, next) {
     var counter = 0;
     (function getPage() {
       counter++;
-      request({url: req.target_url, timeout: 10000}, function(err, response, body) {
+      request({
+        url: req.target_url,
+        timeout: 10000,
+        headers: {
+          'X-Forwarded-For': chance.ip(),
+          'Client-Ip': chance.ip(),
+          'Via': chance.ip()
+        },
+        pool: pool
+      }, function(err, response, body) {
         if (err) {
           if (counter < 3) {
             console.log('Failed scraping page %s, retry (%d attempts)', req.target_url, counter + 1);
@@ -82,7 +91,16 @@ function(req, res, next) {
 
               (function getUrl() {
                 counter++;
-                request({url: url, timeout: 10000, pool: {maxSockets: 3}}, function(err, response, body) {
+                request({
+                  url: url,
+                  timeout: 10000,
+                  headers: {
+                    'X-Forwarded-For': chance.ip(),
+                    'Client-Ip': chance.ip(),
+                    'Via': chance.ip()
+                  },
+                  pool: pool
+                }, function(err, response, body) {
                   if (err) {
                     if (counter < 3) {
                       console.log('Failed scraping page # %d, retry (%d attempts)', i + 1, counter + 1);
