@@ -3,6 +3,7 @@
 
 var app = angular.module('comicApp', ['ngRoute', 'ngAnimate']);
 
+
 app.config(function($routeProvider, $locationProvider) {
 
   $routeProvider.when('/', {
@@ -15,16 +16,7 @@ app.config(function($routeProvider, $locationProvider) {
     controller:   'BookCtrl',
     templateUrl:  'book.html',
     resolve: {
-      gotBook: function(DataObject, $q, $location) {
-        var gotBook = $q.defer();
-        if ('chapters' in DataObject) {
-          gotBook.resolve();
-        } else {
-          $location.path('/');
-          gotBook.reject();
-        }
-        return gotBook.promise;
-      }
+      initResolver: 'initResolver'
     }
   })
   .when('/:book_title/:chapter_title/', {
@@ -32,16 +24,7 @@ app.config(function($routeProvider, $locationProvider) {
     controller:   'ChapterCtrl',
     templateUrl:  'chapter.html',
     resolve: {
-      gotChapter: function(DataObject, $q, $location) {
-        var gotBook = $q.defer();
-        if ('urls' in DataObject) {
-          gotBook.resolve();
-        } else {
-          $location.path('/');
-          gotBook.reject();
-        }
-        return gotBook.promise;
-      }
+      initResolver: 'initResolver'
     }
   })
   .otherwise({
@@ -53,75 +36,103 @@ app.config(function($routeProvider, $locationProvider) {
 });
 
 
-app.run(function($rootScope, $http, $location, DataObject) {
+app.factory('initResolver', function($q, $timeout, $location) {
+  var deferred = $q.defer();
+  $location.path('/');
+  deferred.resolve();
+  return deferred.promise;
+});
 
-  $rootScope.inputSubmit = function($event, targetUrl, bookPage) {
-    if ($event == null ||
-       ($event.keyCode === 13 && $rootScope.headerForm.$valid))
-    {
-      if (/^http:\/\/www\.u17\.com\/comic\/\d+\.html\?u=\d+$/.test(targetUrl)) {
-        // http://www.u17.com/comic/6066.html?u=1511242
-        $http.post('/api/get_unseal_stone', {reference_url: targetUrl})
-        .then(function(res) { alert('success!'); });
-      } else {
-        NProgress.start();
-        var promise = $http.post(
-          '/api/scrap_url',
-          {target_url: targetUrl,
-           book_page:  bookPage})
-        .then(function(res) {
-          if (res.data.type === 'chapter_page') {
-            DataObject.urls = res.data.urls;
-            $location.path('/book_page/chapter_page/');
-          } else {
-            DataObject.chapters = res.data.chapters;
-            $location.path('/book_page/');
-          }
+
+app.factory('getResources', function($http) {
+
+  // callback(type, object)
+  return function(url, callback) {
+    // unseal stone url
+    // http://www.u17.com/comic/6066.html?u=1511242
+    NProgress.start();
+    if (/^http:\/\/www\.u17\.com\/comic\/\d+\.html\?u=\d+$/.test(url)) {
+      return $http.post('/api/get_unseal_stone', {reference_url: url})
+      .then(function(res) {
+        NProgress.done();
+      });
+    }
+    // other pages
+    else {
+      return $http.post('/api/scrap_url', {target_url: url})
+      .then(
+        function(res) {
           NProgress.done();
-        }, function(err) {
-          console.error('Error occurs during scraping %O', err.data);
+          return res.data.type === 'chapter_page' ?
+                 {type: 'chapter_page', data: res.data.urls} :
+                 {type: 'book_page'   , data: res.data.chapters};
+        },
+        function(err) {
           NProgress.remove();
           throw err;
-        });
-        return promise;
-      }
+        }
+      );
     }
   };
 
 });
 
 
-app.controller('DashboardCtrl', function($scope) {
+app.controller('AppCtrl', function($scope, $http, $location, getResources) {
 
-});
-
-
-app.controller('BookCtrl', function($scope, DataObject, $location, $http, $rootScope) {
-
-  this.jumpToChapter = function(chapter, $index) {
-    $rootScope.inputSubmit(null, chapter.href, true)
-    .then(function() {
-      $rootScope.lastVisitedChapterIndex = $index;
-    });
+  $scope.inputSubmit = function($event, targetUrl) {
+    if ($event.keyCode === 13 && $scope.headerForm.$valid) {
+      getResources(targetUrl).then(
+        function(res) {
+          if (res == null) alert('Success');
+          else if (res.type === 'chapter_page') {
+            $scope.urls = res.data;
+            $location.path('/book_page/chapter_page');
+          }
+          else {
+            $scope.chapters = res.data;
+            $location.path('/book_page');
+          }
+        },
+        function(err) { alert(err); }
+      );
+    }
   };
 
-  var _this = this;
-  $scope.$watch(function() {
-    return DataObject.chapters;
-  }, function(val) {
-    _this.chapters = val;
-  });
 });
 
 
-app.controller('ChapterCtrl', function($scope, DataObject) {
+app.controller('DashboardCtrl', function($scope, $http) {
+
   var _this = this;
-  $scope.$watch(function() {
-    return DataObject.urls;
-  }, function(val) {
-    _this.images = val;
+
+  // Query all Books at the beginning
+  $http.get('/api/books').success(function(books) {
+    _this.books = books;
   });
+
 });
 
 
-app.value('DataObject', {});
+app.controller('BookCtrl', function($scope, $location, getResources) {
+
+  this.jumpToChapter = function(chapter, $index) {
+    getResources(chapter.href)
+    .then(
+      function(res) {
+        var $parent = $scope.$parent;
+        $parent.urls = res.data;
+        $parent.lastVisitedChapterIndex = $index;
+        $location.path('/book_page/chapter_page');
+      },
+      function(err) { alert(err); }
+    );
+  };
+
+  this.chapters = $scope.chapters;
+});
+
+
+app.controller('ChapterCtrl', function($scope) {
+  this.images = $scope.urls;
+});

@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.6.2.min.js"></script>
 </head>
-<body ng-app="comicApp">
+<body ng-app="comicApp" ng-controller="AppCtrl as AppCtrl">
 
   <header class="md-banner">
     <form name="headerForm" class="md-banner-form">
@@ -25,14 +25,12 @@
     </form>
   </header>
 
-  <ng-view class="md-body">
-
-  </ng-view>
+  <ng-view class="md-body"></ng-view>
 
 
   <script type="text/ng-template" id="dashboard.html">
     <ol class="md-bookshelf">
-      <li class="md-bookshelf-item"></li>
+      <li class="md-bookshelf-item" ng-repeat="book in DashboardCtrl.books"></li>
     </ol>
   </script>
 
