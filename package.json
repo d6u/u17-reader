@@ -11,6 +11,8 @@
     "request": "*",
     "q": "*",
     "lodash": "*",
-    "chance": "*"
+    "chance": "*",
+    "mongodb": "*",
+    "cheerio": "*"
   }
 }
