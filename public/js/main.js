@@ -146,3 +146,33 @@ app.controller('BookCtrl', function($scope, $location, getResources, $routeParam
 app.controller('ChapterCtrl', function($scope) {
   this.images = $scope.urls;
 });
+
+
+app.directive('mdBookshelfLayout', function($window) {
+  return function(scope, element, attrs) {
+
+    // Adjust the width of remainder items, in order to align them
+    //
+    scope.$watch(adjustRemainderItemLayout);
+    $($window).on('resize', adjustRemainderItemLayout);
+
+    function adjustRemainderItemLayout() {
+      var pw = element.width()
+        , ph = element.height();
+      var $children = element.children();
+      var cw = $children.width()
+        , ch = $children.height();
+
+      if (ph > ch) {
+        // Multiple line
+        var itemsPerLine = Math.round(pw / cw);
+        var remainder = $children.length % itemsPerLine;
+        var $remainderItems = $children.filter(':gt(-'+(remainder + 1)+')');
+        console.log(itemsPerLine, remainder)
+        $children.css('max-width', '');
+        $remainderItems.css('max-width', cw);
+      }
+    }
+
+  };
+});
