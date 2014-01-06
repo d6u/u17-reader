@@ -84,7 +84,11 @@ app.factory('getResources', function($http) {
 app.controller('AppCtrl', function($scope, $http, $location, getResources) {
 
   $scope.inputSubmit = function($event, targetUrl) {
-    if ($event.keyCode === 13 && $scope.headerForm.$valid) {
+    var valid = $event.keyCode == null ?
+                true :
+                ($event.keyCode === 13 && $scope.headerForm.$valid);
+
+    if (valid) {
       getResources(targetUrl).then(
         function(res) {
           if (res == null) alert('Success');
@@ -117,7 +121,7 @@ app.controller('DashboardCtrl', function($scope, $http) {
 });
 
 
-app.controller('BookCtrl', function($scope, $location, getResources) {
+app.controller('BookCtrl', function($scope, $location, getResources, $routeParams) {
 
   this.jumpToChapter = function(chapter, $index) {
     getResources(chapter.href)

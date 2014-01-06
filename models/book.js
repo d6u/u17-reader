@@ -50,7 +50,7 @@ Book.find = function(query, options, callback) {
   getDb(function(db) {
     var books = db.collection('books').find(
       {},
-      {title: true, cover_img: true, open_count: true}
+      {title: true, cover_img: true, open_count: true, book_page_url: true}
     );
     books.sort({open_count: -1});
     books.toArray(function(err, docs) {
