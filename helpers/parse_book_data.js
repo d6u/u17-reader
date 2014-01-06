@@ -26,6 +26,6 @@ module.exports = function(content) {
     }
   }
 
-  return {title: book_title, cover_img: cover_img, chapters: chapters};
+  return {title: book_title, cover_img_orgin: cover_img, chapters: chapters};
 
 };

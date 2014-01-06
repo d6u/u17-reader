@@ -14,6 +14,7 @@ var Q = require('q');
 var _ = require('lodash');
 var chance = new (require('chance'));
 var Url = require('url');
+var fs = require('fs');
 
 var app = express();
 var pool = new http.Agent();
@@ -160,11 +161,19 @@ function(req, res, next) {
 function(req, res, next) {
   console.log('Book page: scraping %s', req.target_url);
   var bookData = parseBookData(req.book_body);
-
   if (bookData) {
     console.log('Got %d chapters', bookData.chapters.length);
     var book = new Book(bookData);
-    book.save().then(res.json.bind(res));
+    book.set('book_page_url', req.target_url);
+    book.save().then(function(doc) {
+      fs.mkdir('./public/books', function(e) {
+        fs.mkdir('./public/books/'+doc._id.toHexString(), function(e) {
+          var cover_img = '/books/'+doc._id.toHexString()+'/cover_img.jpg';
+          request(doc.cover_img_orgin).pipe(fs.createWriteStream('./public'+cover_img));
+          book.set('cover_img', cover_img).save().then(res.json.bind(res));
+        });
+      });
+    });
   } else {
     next({message: 'target_url is neither a chapter page nor a book page'});
   }

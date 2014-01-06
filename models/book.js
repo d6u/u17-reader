@@ -30,6 +30,15 @@ var Book = function(attrs) {
     return saved.promise;
   };
 
+  this.set = function(name, value) {
+    this.attrs[name] = value;
+    return this;
+  };
+
+  this.get = function(name) {
+    return this.attrs[name];
+  };
+
 };
 
 
