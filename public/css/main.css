@@ -8,6 +8,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 
+html, body { height: 100%; }
 body {
   position: relative;
 }
@@ -68,10 +69,20 @@ body {
 }
 
 
+.md-body {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 60px;
+  bottom: 0;
+  overflow-y: auto;
+}
+
+
 /* Dashboard */
 .md-bookshelf {
   margin: 0;
-  padding: 0;
+  padding: 0 20px 20px 0;
   list-style: none;
 }
 

@@ -14,7 +14,7 @@ app.config(function($routeProvider, $locationProvider) {
       initResolver: 'initResolver'
     }
   })
-  .when('/:book_id/', {
+  .when('/:book_id', {
     controllerAs: 'BookCtrl',
     controller:   'BookCtrl',
     templateUrl:  'book.html',
@@ -22,7 +22,7 @@ app.config(function($routeProvider, $locationProvider) {
       initResolver: 'initResolver'
     }
   })
-  .when('/:book_id/:chapter_index/', {
+  .when('/:book_id/:chapter_index', {
     controllerAs: 'ChapterCtrl',
     controller:   'ChapterCtrl',
     templateUrl:  'chapter.html',

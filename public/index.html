@@ -29,7 +29,7 @@
 
 
   <script type="text/ng-template" id="dashboard.html">
-    <ol class="md-bookshelf">
+    <ol class="md-bookshelf clearfix">
       <li class="md-bookshelf-item" ng-repeat="book in DashboardCtrl.books">
         <a href class="md-bookshelf-item-anchor" ng-click="inputSubmit($event, book.book_page_url)">
           <img ng-src="{{ book.cover_img }}">
