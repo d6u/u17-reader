@@ -14,7 +14,7 @@ app.config(function($routeProvider, $locationProvider) {
       initResolver: 'initResolver'
     }
   })
-  .when('/:book_title/', {
+  .when('/:book_id/', {
     controllerAs: 'BookCtrl',
     controller:   'BookCtrl',
     templateUrl:  'book.html',
@@ -22,7 +22,7 @@ app.config(function($routeProvider, $locationProvider) {
       initResolver: 'initResolver'
     }
   })
-  .when('/:book_title/:chapter_title/', {
+  .when('/:book_id/:chapter_index/', {
     controllerAs: 'ChapterCtrl',
     controller:   'ChapterCtrl',
     templateUrl:  'chapter.html',
@@ -42,7 +42,7 @@ app.config(function($routeProvider, $locationProvider) {
 app.factory('initResolver', function($q, $timeout, $location) {
   var deferred = $q.defer();
   $location.path('/');
-  deferred.resolve();
+  $timeout(function() { deferred.resolve(); });
   return deferred.promise;
 });
 
@@ -67,8 +67,8 @@ app.factory('getResources', function($http) {
         function(res) {
           NProgress.done();
           return res.data.type === 'chapter_page' ?
-                 {type: 'chapter_page', data: res.data.urls} :
-                 {type: 'book_page'   , data: res.data.chapters};
+                 {type: 'chapter_page', urls: res.data.urls} :
+                 res.data;
         },
         function(err) {
           NProgress.remove();
@@ -90,15 +90,15 @@ app.controller('AppCtrl', function($scope, $http, $location, getResources) {
 
     if (valid) {
       getResources(targetUrl).then(
-        function(res) {
-          if (res == null) alert('Success');
-          else if (res.type === 'chapter_page') {
-            $scope.urls = res.data;
+        function(data) {
+          if (data == null) alert('Success');
+          else if (data.type === 'chapter_page') {
+            $scope.urls = data.urls;
             $location.path('/book_page/chapter_page');
           }
           else {
-            $scope.chapters = res.data;
-            $location.path('/book_page');
+            $scope.chapters = data.chapters;
+            $location.path('/'+data._id);
           }
         },
         function(err) { alert(err); }
@@ -121,22 +121,25 @@ app.controller('DashboardCtrl', function($scope, $http) {
 });
 
 
-app.controller('BookCtrl', function($scope, $location, getResources, $routeParams) {
+app.controller('BookCtrl', function($scope, $location, getResources, $routeParams, $http, $timeout) {
 
   this.jumpToChapter = function(chapter, $index) {
     getResources(chapter.href)
     .then(
-      function(res) {
+      function(data) {
         var $parent = $scope.$parent;
-        $parent.urls = res.data;
+        $parent.urls = data.urls;
         $parent.lastVisitedChapterIndex = $index;
-        $location.path('/book_page/chapter_page');
+        $location.path( $location.path() + '/chapter_page' );
       },
       function(err) { alert(err); }
     );
   };
 
+  $http.put('/api/books/' + $routeParams.book_id, {open_count: '$inc'});
+
   this.chapters = $scope.chapters;
+
 });
 
 

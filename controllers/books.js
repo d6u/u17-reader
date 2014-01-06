@@ -30,7 +30,15 @@ function createBook(req, res, next) {
 
 
 function updateBook(req, res, next) {
-
+  Book.find({_id: req.params.id}, function(book) {
+    if (req.param('open_count') === '$inc') {
+      book.inc('open_count').then(function() {
+        res.send(200);
+      }, function(err) {
+        res.send(500, err);
+      });
+    }
+  });
 }
 
 
