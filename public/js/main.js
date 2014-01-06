@@ -159,18 +159,21 @@ app.directive('mdBookshelfLayout', function($window) {
     function adjustRemainderItemLayout() {
       var pw = element.width()
         , ph = element.height();
-      var $children = element.children();
+      var $children = element.children(':not(.md-bookshelf-item-placeholder)');
       var cw = $children.width()
         , ch = $children.height();
 
-      if (ph > ch) {
-        // Multiple line
+      if (ph > ch) { // Multiple line
         var itemsPerLine = Math.round(pw / cw);
         var remainder = $children.length % itemsPerLine;
-        var $remainderItems = $children.filter(':gt(-'+(remainder + 1)+')');
-        console.log(itemsPerLine, remainder)
-        $children.css('max-width', '');
-        $remainderItems.css('max-width', cw);
+        var remainder = remainder || itemsPerLine;
+        var $placeholders = element.find('.md-bookshelf-item-placeholder');
+        if ($placeholders.length != itemsPerLine - remainder) {
+          $placeholders.remove();
+          for (var i = 0; i < itemsPerLine - remainder; i++) {
+            element.append($('<li>').addClass('md-bookshelf-item-placeholder'));
+          }
+        }
       }
     }
 

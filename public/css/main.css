@@ -89,7 +89,12 @@ body {
 }
 
 .md-bookshelf-item {
-  float: left;
+  min-width: 270px;
+  flex-grow: 1;
+}
+
+.md-bookshelf-item-placeholder {
+  height: 357px;
   min-width: 270px;
   flex-grow: 1;
 }
