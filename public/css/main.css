@@ -8,6 +8,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 
+html, body { height: 100%; }
 body {
   position: relative;
 }
@@ -68,11 +69,58 @@ body {
 }
 
 
+.md-body {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 60px;
+  bottom: 0;
+  overflow-y: auto;
+}
+
+
 /* Dashboard */
 .md-bookshelf {
   margin: 0;
   padding: 0;
   list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.md-bookshelf-item {
+  min-width: 270px;
+  flex-grow: 1;
+}
+
+.md-bookshelf-item-placeholder {
+  height: 357px;
+  min-width: 270px;
+  flex-grow: 1;
+}
+
+.md-bookshelf-item-anchor {
+  width: 210px;
+  height: 277px;
+  display: block;
+  margin: 40px auto;
+}
+
+.md-bookshelf-item-anchor:hover {
+  text-decoration: none;
+}
+
+.md-bookshelf-item-image {
+  display: block;
+  width: 210px;
+  height: 277px;
+}
+
+.md-bookshelf-item-title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 36px;
+  padding: 0 8px;
 }
 
 

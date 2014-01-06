@@ -14,6 +14,7 @@ var Q = require('q');
 var _ = require('lodash');
 var chance = new (require('chance'));
 var Url = require('url');
+var fs = require('fs');
 
 var app = express();
 var pool = new http.Agent();
@@ -37,6 +38,14 @@ app.use(app.router);
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
+
+
+// Helpers
+var parseBookData = require('./helpers/parse_book_data');
+
+
+// Models
+var Book = require('./models/book');
 
 
 // Scrap target page
@@ -151,10 +160,20 @@ function(req, res, next) {
 // book page
 function(req, res, next) {
   console.log('Book page: scraping %s', req.target_url);
-  var chapters = getBookChapters(req.book_body);
-  if (chapters) {
-    console.log('Got %d chapters', chapters.length);
-    res.json({type: 'book_page', chapters: chapters});
+  var bookData = parseBookData(req.book_body);
+  if (bookData) {
+    console.log('Got %d chapters', bookData.chapters.length);
+    var book = new Book(bookData);
+    book.set('book_page_url', req.target_url);
+    book.save().then(function(doc) {
+      fs.mkdir('./public/books', function(e) {
+        fs.mkdir('./public/books/'+doc._id.toHexString(), function(e) {
+          var cover_img = '/books/'+doc._id.toHexString()+'/cover_img.jpg';
+          request(doc.cover_img_orgin).pipe(fs.createWriteStream('./public'+cover_img));
+          book.set('cover_img', cover_img).save().then(res.json.bind(res));
+        });
+      });
+    });
   } else {
     next({message: 'target_url is neither a chapter page nor a book page'});
   }
@@ -238,6 +257,11 @@ app.post('/api/get_unseal_stone', function(req, res, next) {
 });
 
 
+// Resources
+//
+require('./controllers/books')(app);
+
+
 // Make sure every page leads to homepage
 app.get(/^(?!\/api).*/, function(req, res) {
   res.sendfile('./public/index.html');
@@ -271,22 +295,5 @@ function getPageImageSrc(content) {
     var decodedStr = new Buffer(encodedStr, 'base64').toString('utf8');
     var imageUrl   = /src="(.+\.(?:jpg|jpeg|png))"/.exec(decodedStr)[1];
     return imageUrl;
-  }
-}
-
-
-function getBookChapters(content) {
-  var match = /<ul\s.*id="chapter">([\s\S]+?)<\/ul>/.exec(content);
-  if (match) {
-    var items = match[1].match(/<a.+?>.+?<\/a>/g);
-    var chapters = [];
-    for (var i = 0; i < items.length; i++) {
-      var href = /href="(.+?)"/i.exec(items[i]);
-      var title = /title="(.+?)"/i.exec(items[i]);
-      if (href && title) {
-        chapters.push({href: href[1], title: title[1]});
-      }
-    }
-    return chapters;
   }
 }
