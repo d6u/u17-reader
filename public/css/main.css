@@ -75,6 +75,33 @@ body {
   list-style: none;
 }
 
+.md-bookshelf-item {
+  float: left;
+  margin: 20px 0 0 20px;
+}
+
+.md-bookshelf-item-anchor {
+  width: 210px;
+  height: 313px;
+  display: block;
+}
+
+.md-bookshelf-item-anchor:hover {
+  text-decoration: none;
+  background-color: #e9e9e9;
+}
+
+.md-bookshelf-item-anchor img {
+  display: block;
+}
+
+.md-bookshelf-item-title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 36px;
+  padding: 0 8px;
+}
+
 
 /* Book View */
 .md-chapter-list {

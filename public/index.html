@@ -30,7 +30,12 @@
 
   <script type="text/ng-template" id="dashboard.html">
     <ol class="md-bookshelf">
-      <li class="md-bookshelf-item" ng-repeat="book in DashboardCtrl.books"></li>
+      <li class="md-bookshelf-item" ng-repeat="book in DashboardCtrl.books">
+        <a ng-href="/{{ book._id }}" class="md-bookshelf-item-anchor">
+          <img ng-src="{{ book.cover_img }}">
+          <h2 class="md-bookshelf-item-title">{{ book.title }}</h2>
+        </a>
+      </li>
     </ol>
   </script>
 
