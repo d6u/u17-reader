@@ -9,7 +9,10 @@ app.config(function($routeProvider, $locationProvider) {
   $routeProvider.when('/', {
     controllerAs: 'DashboardCtrl',
     controller:   'DashboardCtrl',
-    templateUrl:  'dashboard.html'
+    templateUrl:  'dashboard.html',
+    resolve: {
+      initResolver: 'initResolver'
+    }
   })
   .when('/:book_title/', {
     controllerAs: 'BookCtrl',
