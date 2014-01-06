@@ -30,7 +30,7 @@
 
   <script type="text/ng-template" id="dashboard.html">
     <ol class="md-bookshelf clearfix" md-bookshelf-layout>
-      <li class="md-bookshelf-item" ng-repeat="book in DashboardCtrl.books">
+      <li class="md-bookshelf-item" ng-repeat="book in DashboardCtrl.books" md-bookshelf-item-background>
         <a href class="md-bookshelf-item-anchor" ng-click="inputSubmit($event, book.book_page_url)">
           <img ng-src="{{ book.cover_img }}" class="md-bookshelf-item-image">
         </a>
@@ -57,6 +57,7 @@
   </script>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="/js/vendor/rgbaster.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
   <script src="/js/vendor/angular-animate.min.js"></script>
   <script src="/js/vendor/angular-route.min.js"></script>

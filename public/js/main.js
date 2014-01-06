@@ -176,3 +176,17 @@ app.directive('mdBookshelfLayout', function($window) {
 
   };
 });
+
+
+app.directive('mdBookshelfItemBackground', function() {
+  return function(scope, element, attrs) {
+
+    setTimeout(function() {
+      var img = element.find('.md-bookshelf-item-image')[0];
+      RGBaster.colors(img, function(payload) {
+        element.css('background-color', payload.dominant);
+      });
+    }, 10);
+
+  };
+});
