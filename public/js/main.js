@@ -191,5 +191,13 @@ app.directive('mdBookshelfItemBackground', function() {
       });
     }, 10);
 
+    element.on('mouseenter', 'a', function() {
+      element.css('opacity', .7);
+    });
+
+    element.on('mouseleave', 'a', function() {
+      element.css('opacity', '');
+    });
+
   };
 });
