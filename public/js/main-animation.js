@@ -4,37 +4,44 @@ app.animation('.md-view', function($rootScope) {
     , previousLevel = 0;
 
   $rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
-    console.log(arguments);
     currentLevel = current.$$route.level;
     previousLevel = previous.$$route.level;
   });
 
   return {
     enter: function(element, done) {
-      console.log(currentLevel, previousLevel);
       if (currentLevel - previousLevel > 0) {
-        element.children()
-          .css({left: '100%', zIndex: 1})
-          .animate({left: 0}, 600, function() {
-            $(this).css({left: '', zIndex: ''})
-            done();
-          });
+        element.children().css({zIndex: 1})
+        TweenLite.from(
+          element.children()[0], 0.6,
+          {
+            left: '100%',
+            onComplete: function() {
+              element.children().css({zIndex: ''});
+              done();
+            }
+          }
+        );
       } else {
-        setTimeout(done, 600);
+        TweenLite.from(element.children()[0], 0.6, {scale: 0.75, onComplete: done});
       }
     },
 
     leave: function(element, done) {
-      console.log(currentLevel, previousLevel);
       if (currentLevel - previousLevel > 0) {
-        setTimeout(done, 600);
+        TweenLite.to(element.children()[0], 0.6, {scale: 0.75, onComplete: done});
       } else {
-        element.children()
-          .css({left: 0, zIndex: 1})
-          .animate({left: '100%'}, 600, function() {
-            $(this).css({left: '', zIndex: ''})
-            done();
-          });
+        element.children().css({zIndex: 1});
+        TweenLite.to(
+          element.children()[0], 0.6,
+          {
+            left: '100%',
+            onComplete: function() {
+              element.children().css({zIndex: ''});
+              done();
+            }
+          }
+        );
       }
     }
   };
