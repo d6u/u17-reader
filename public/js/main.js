@@ -12,7 +12,8 @@ app.config(function($routeProvider, $locationProvider) {
     templateUrl:  'dashboard.html',
     resolve: {
       initResolver: 'initResolver'
-    }
+    },
+    level: 0
   })
   .when('/:book_id', {
     controllerAs: 'BookCtrl',
@@ -20,7 +21,8 @@ app.config(function($routeProvider, $locationProvider) {
     templateUrl:  'book.html',
     resolve: {
       initResolver: 'initResolver'
-    }
+    },
+    level: 1
   })
   .when('/:book_id/:chapter_index', {
     controllerAs: 'ChapterCtrl',
@@ -28,7 +30,8 @@ app.config(function($routeProvider, $locationProvider) {
     templateUrl:  'chapter.html',
     resolve: {
       initResolver: 'initResolver'
-    }
+    },
+    level: 3
   })
   .otherwise({
     redirectTo: '/'

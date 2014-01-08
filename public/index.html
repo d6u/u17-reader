@@ -25,35 +25,44 @@
     </form>
   </header>
 
-  <ng-view class="md-body"></ng-view>
+
+  <div class="md-body">
+    <div ng-view class="md-view"></div>
+  </div>
 
 
   <script type="text/ng-template" id="dashboard.html">
-    <ol class="md-bookshelf clearfix" md-bookshelf-layout="md-bookshelf-item-placeholder">
-      <li class="md-bookshelf-item" ng-repeat="book in DashboardCtrl.books" md-bookshelf-item-background>
-        <a href class="md-bookshelf-item-anchor" ng-click="inputSubmit($event, book.book_page_url)">
-          <img ng-src="{{ book.cover_img }}" class="md-bookshelf-item-image">
-        </a>
-      </li>
-    </ol>
+    <div class="md-view-inner">
+      <ol class="md-bookshelf clearfix" md-bookshelf-layout="md-bookshelf-item-placeholder">
+        <li class="md-bookshelf-item" ng-repeat="book in DashboardCtrl.books" md-bookshelf-item-background>
+          <a href class="md-bookshelf-item-anchor" ng-click="inputSubmit($event, book.book_page_url)">
+            <img ng-src="{{ book.cover_img }}" class="md-bookshelf-item-image">
+          </a>
+        </li>
+      </ol>
+    </div>
   </script>
 
   <script type="text/ng-template" id="book.html">
-    <ol class="md-chapter-list clearfix" md-bookshelf-layout="md-chapter-item-placeholder">
-      <li class="md-chapter-item" ng-repeat="chapter in BookCtrl.chapters">
-        <a class="md-chapter-item-anchor" href ng-click="BookCtrl.jumpToChapter(chapter, $index)" ng-class="{'last-visited': $index === lastVisitedChapterIndex}">
-          <h2 class="md-chapter-item-title">{{ chapter.title }}</h2>
-        </a>
-      </li>
-    </ol>
+    <div class="md-view-inner">
+      <ol class="md-chapter-list clearfix" md-bookshelf-layout="md-chapter-item-placeholder">
+        <li class="md-chapter-item" ng-repeat="chapter in BookCtrl.chapters">
+          <a class="md-chapter-item-anchor" href ng-click="BookCtrl.jumpToChapter(chapter, $index)" ng-class="{'last-visited': $index === lastVisitedChapterIndex}">
+            <h2 class="md-chapter-item-title">{{ chapter.title }}</h2>
+          </a>
+        </li>
+      </ol>
+    </div>
   </script>
 
   <script type="text/ng-template" id="chapter.html">
-    <ol class="md-chapter">
-      <li class="md-chapter-page" ng-repeat="image in ChapterCtrl.images">
-        <img ng-src="{{ image.src }}" class="md-chapter-page-image">
-      </li>
-    </ol>
+    <div class="md-view-inner">
+      <ol class="md-chapter">
+        <li class="md-chapter-page" ng-repeat="image in ChapterCtrl.images">
+          <img ng-src="{{ image.src }}" class="md-chapter-page-image">
+        </li>
+      </ol>
+    </div>
   </script>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -63,5 +72,6 @@
   <script src="/js/vendor/angular-route.min.js"></script>
   <script src="/js/vendor/nprogress.js"></script>
   <script src="/js/main.js"></script>
+  <script src="/js/main-animation.js"></script>
 </body>
 </html>
