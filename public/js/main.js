@@ -188,7 +188,6 @@ app.directive('mdBookshelfLayout', function($window) {
         var remainder = $children.length % itemsPerLine;
         var remainder = remainder || itemsPerLine;
         var $placeholders = element.find('.'+placeholderClass);
-        console.log(itemsPerLine, remainder);
         if ($placeholders.length != itemsPerLine - remainder) {
           $placeholders.remove();
           for (var i = 0; i < itemsPerLine - remainder; i++) {
@@ -212,7 +211,7 @@ app.directive('mdBookshelfItemBackground', function() {
       RGBaster.colors(img, function(payload) {
         element.css('background-color', payload.dominant);
       });
-    }, 10);
+    }, 610);
 
     element.on('mouseenter', 'a', function() {
       element.css('opacity', .7);
