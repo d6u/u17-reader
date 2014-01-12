@@ -188,6 +188,9 @@ body {
   height: 277px;
   display: block;
   margin: 40px auto;
+  overflow: hidden;
+  background-color: #111;
+  position: relative;
 }
 
 .md-bookshelf-item-anchor:hover {
@@ -195,16 +198,36 @@ body {
 }
 
 .md-bookshelf-item-image {
+  position: relative;
+  z-index: 20;
   display: block;
   width: 210px;
   height: 277px;
+
+  -webkit-transition: all 300ms;
+  -moz-transition: all 300ms;
+  -ms-transition: all 300ms;
+  -o-transition: all 300ms;
+  transition: all 300ms;
+
+  top: 0;
+}
+
+.md-bookshelf-item.mouse-enter .md-bookshelf-item-image {
+  top: 36px;
 }
 
 .md-bookshelf-item-title {
   margin: 0;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 36px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
   padding: 0 8px;
+  color: #FFF;
 }
 
 

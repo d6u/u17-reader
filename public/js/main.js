@@ -215,11 +215,11 @@ app.directive('mdBookshelfItemBackground', function() {
     });
 
     element.on('mouseenter', 'a', function() {
-      element.css('opacity', .7);
+      element.addClass('mouse-enter');
     });
 
     element.on('mouseleave', 'a', function() {
-      element.css('opacity', '');
+      element.removeClass('mouse-enter');
     });
 
   };

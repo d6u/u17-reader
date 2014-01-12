@@ -36,6 +36,7 @@
       <ol class="md-bookshelf clearfix" md-bookshelf-layout="md-bookshelf-item-placeholder">
         <li class="md-bookshelf-item" ng-repeat="book in DashboardCtrl.books" md-bookshelf-item-background>
           <a href class="md-bookshelf-item-anchor" ng-click="inputSubmit($event, book.book_page_url)">
+            <h2 class="md-bookshelf-item-title">{{ book.title }}</h2>
             <img ng-src="{{ book.cover_img }}" class="md-bookshelf-item-image">
           </a>
         </li>
