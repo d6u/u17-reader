@@ -58,9 +58,10 @@ app.value('isMobile', function() {
 });
 
 
-app.run(function(isMobile) {
+app.run(function(isMobile, $rootScope) {
   if (isMobile()) {
     $(document.body).addClass('ly-mobile');
+    $rootScope.mobile = true;
   }
 });
 

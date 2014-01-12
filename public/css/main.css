@@ -343,13 +343,7 @@ body {
 
 
 /* Mobile */
-.ly-mobile .md-body {
-  position: relative;
-  top: auto;
-  left: auto;
-  right: auto;
-  bottom: auto;
-}
+.ly-mobile .md-body {}
 
 .ly-mobile .md-view {
   height: auto;
