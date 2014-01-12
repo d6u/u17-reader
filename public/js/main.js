@@ -58,9 +58,10 @@ app.value('isMobile', function() {
 });
 
 
-app.run(function(isMobile) {
+app.run(function(isMobile, $rootScope) {
   if (isMobile()) {
     $(document.body).addClass('ly-mobile');
+    $rootScope.mobile = true;
   }
 });
 
@@ -211,7 +212,7 @@ app.directive('mdBookshelfItemBackground', function() {
       RGBaster.colors(img, function(payload) {
         element.css('background-color', payload.dominant);
       });
-    }, 610);
+    });
 
     element.on('mouseenter', 'a', function() {
       element.css('opacity', .7);

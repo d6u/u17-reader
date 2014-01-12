@@ -1,32 +1,33 @@
 app.animation('.md-view', function($rootScope) {
 
-  var currentLevel = 1
-    , previousLevel = 0;
+  var currentLevel, priorLevel;
 
-  $rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
+  $rootScope.$on('$routeChangeSuccess', function(event, current, prior) {
     currentLevel = current.$$route.level;
-    previousLevel = previous.$$route.level;
+    priorLevel = prior.$$route.level;
   });
 
   return {
     enter: function(element, done) {
-      if (currentLevel - previousLevel > 0) {
-        element.children().css({zIndex: 1});
-        TweenLite.from(element.children(), 0.6, {left: '100%', onComplete: done});
-      } else {
-        element.children().css({zIndex: -1});
-        TweenLite.from(element.children(), 0.6, {scale: 0.75, onComplete: done});
+      if (typeof currentLevel === 'undefined') {
+        done();
+        return;
       }
+      if (currentLevel - priorLevel > 0) {
+        element.removeClass('lower-level').addClass('higher-level');
+      } else {
+        element.removeClass('higher-level').addClass('lower-level');
+      }
+      done();
     },
 
     leave: function(element, done) {
-      if (currentLevel - previousLevel > 0) {
-        element.children().css({zIndex: -1});
-        TweenLite.to(element.children(), 0.6, {scale: 0.75, onComplete: done});
+      if (currentLevel - priorLevel > 0) {
+        element.removeClass('higher-level').addClass('lower-level');
       } else {
-        element.children().css({zIndex: 1});
-        TweenLite.to(element.children(), 0.6, {left: '100%', onComplete: done});
+        element.removeClass('lower-level').addClass('higher-level');
       }
+      done();
     }
   };
 
