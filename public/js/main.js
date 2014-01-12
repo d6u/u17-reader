@@ -211,7 +211,7 @@ app.directive('mdBookshelfItemBackground', function() {
       RGBaster.colors(img, function(payload) {
         element.css('background-color', payload.dominant);
       });
-    }, 610);
+    });
 
     element.on('mouseenter', 'a', function() {
       element.css('opacity', .7);
