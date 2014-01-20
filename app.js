@@ -221,16 +221,24 @@ app.post('/api/get_unseal_stone', function(req, res, next) {
     console.log('Sending #%d request...', i+1);
 
     var got = Q.defer()
-      , counter = 1;
-    gotThreeStone.push(got);
+      , counter = 0;
+    gotThreeStone.push(got.promise);
     (function sendRequest() {
       request(requestOptions, function(err, response, body) {
-        if (response.statusCode === 200) {
+        counter++;
+        if (!err && response.statusCode === 200) {
+          console.log('Request succeeded');
           got.resolve();
         } else if (counter <= 3) {
-          console.log('#%d request failed, #%d attempt', i+1, counter);
-          counter++;
-          sendRequest();
+          if (err) {
+            console.log('#%d request failed with error %j, #%d attempt',
+                        i+1, err, counter);
+            sendRequest();
+          } else {
+            console.log('#%d request failed with response code %d, #%d attempt',
+                        i+1, response.statusCode, counter);
+            sendRequest();
+          }
         } else {
           console.log('#%d request failed after 3 attempts', i+1);
           got.reject();
